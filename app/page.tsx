@@ -4,11 +4,22 @@ import {useState, useRef} from "react";
 import QRCode from "qrcode";
 
 export default function Home() {
+    // --- 状態管理 ---
+    // ユーザーが入力したテキストまたはURL
     const [text, setText] = useState("");
+    // 生成されたQRコード画像のData URL（PNG形式）。ダウンロードリンクの href に使用する。
+    // null の場合はQRコードが未生成であることを示す。
     const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+    // エラーメッセージ。バリデーションエラーや生成失敗時にセットされる。
     const [error, setError] = useState<string | null>(null);
+    // QRコードの描画先となる <canvas> 要素への参照
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
+    // --- QRコード生成処理 ---
+    // 1. 入力値のバリデーション
+    // 2. qrcode ライブラリで <canvas> にQRコードを描画
+    // 3. canvas の内容を Data URL (PNG) に変換し、state に保存
+    //    → qrDataUrl がセットされると、canvas が表示され、ダウンロードリンクが出現する
     const generateQR = async () => {
         if (!text.trim()) {
             setError("テキストまたはURLを入力してください");
@@ -23,12 +34,15 @@ export default function Home() {
                 return;
             }
 
+            // canvas にQRコードを直接描画する
             await QRCode.toCanvas(canvas, text, {
                 width: 300,
                 margin: 2,
                 color: {dark: "#000000", light: "#ffffff"},
             });
 
+            // canvas の内容をPNG形式の Data URL に変換して保存する。
+            // この Data URL は <a> タグの href として使われ、ダウンロード可能になる。
             const dataUrl = canvas.toDataURL("image/png");
             setQrDataUrl(dataUrl);
         } catch {
@@ -37,6 +51,7 @@ export default function Home() {
         }
     };
 
+    // --- 描画 ---
     return (
         <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
             <main
@@ -45,6 +60,7 @@ export default function Home() {
                     QR Code Generator
                 </h1>
 
+                {/* 入力エリア: テキスト入力 + 生成ボタン */}
                 <div className="flex w-full flex-col gap-3">
                     <input
                         type="text"
@@ -66,6 +82,9 @@ export default function Home() {
                     <p className="text-sm text-red-500">{error}</p>
                 )}
 
+                {/* QRコード表示エリア */}
+                {/* canvas は常にDOMに存在するが、QR未生成時は hidden で非表示にする。 */}
+                {/* qrDataUrl がセットされると canvas を表示し、ダウンロードリンクも出現する。 */}
                 <div className="flex flex-col items-center gap-4">
                     <canvas
                         ref={canvasRef}

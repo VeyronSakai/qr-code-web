@@ -1,8 +1,7 @@
-import type { NextConfig } from "next";
+import type {NextConfig} from "next";
 
 const nextConfig: NextConfig = {
-  output: "export",
-  basePath: "/qr-code-web",
+    output: "export",
 };
 
 export default nextConfig;

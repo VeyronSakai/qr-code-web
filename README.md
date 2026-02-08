@@ -1,30 +1,50 @@
-# QR Code Generator
+# QR Code Generator (Web)
 
-URL やテキストから QR コードを生成し、PNG 画像としてダウンロードできる Web アプリです。
+A simple web app that generates QR codes from text or URLs and lets you download them as PNG images.
 
-## 技術スタック
+## Features
+
+- Generate QR codes from text or URL input
+- Live preview in the browser
+- Download as PNG
+
+## Tech Stack
 
 - [Next.js](https://nextjs.org/) (App Router)
 - [React](https://react.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [qrcode](https://www.npmjs.com/package/qrcode) — QRコード生成ライブラリ
+- [qrcode](https://www.npmjs.com/package/qrcode)
 
-## 処理の流れ
+## Getting Started
 
-1. ユーザーがテキストまたは URL を入力し「生成」ボタンを押す
-2. `qrcode` ライブラリが `<canvas>` 要素に QR コードを描画する
-3. `canvas.toDataURL()` で canvas の内容を PNG 形式の Data URL に変換する
-4. 「ダウンロード」リンク (`<a download>`) の `href` に Data URL をセットし、クリックで PNG ファイルとして保存できる
+Prerequisites: Node.js and npm.
 
-## 開発
+Install dependencies:
 
 ```bash
 npm install
+```
+
+Start the development server:
+
+```bash
 npm run dev
 ```
 
-http://localhost:3000 でアクセスできます。
+Open http://localhost:3000 in your browser.
 
-## デプロイ
+## Build (Static Export)
 
-`main` ブランチに push すると GitHub Actions で自動的に GitHub Pages にデプロイされます。
+This project uses Next.js static export (`output: "export"`). The build output is written to `out/`.
+
+```bash
+npm run build
+```
+
+To preview the static output locally, serve the `out/` directory with any static file server (for example: `npx serve out`).
+
+If you deploy under a subpath, update `basePath` in `next.config.ts`.
+
+## Deployment
+
+Pushing to `main` deploys the `out/` directory to GitHub Pages via GitHub Actions.
